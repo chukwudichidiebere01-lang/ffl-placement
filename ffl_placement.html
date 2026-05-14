@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Fast French Lab — A1 Placement Test</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:#F0FDFA;color:#134E4A;min-height:100vh}
+:root{
+  --tl:#0D9488;--tl2:#14B8A6;--tl3:#5EEAD4;--tllight:#F0FDFA;--tlbg:#CCFBF1;
+  --pu:#7C3AED;--pulight:#EDE9FE;--pum:#6D28D9;
+  --go:#D97706;--golight:#FEF3C7;
+  --gn:#059669;--gnlight:#D1FAE5;
+  --rd:#DC2626;--rdlight:#FEE2E2;
+  --gy:#6B7280;--dk:#134E4A;--wh:#fff;
+  --border:#99F6E4;--shadow:0 4px 24px rgba(13,148,136,.12);
+}
+.page{max-width:680px;margin:0 auto;padding:16px 14px 80px}
+
+/* HEADER */
+.exam-header{background:linear-gradient(135deg,var(--tl),#0891B2);color:#fff;border-radius:0 0 24px 24px;padding:20px 20px 24px;text-align:center;margin:-16px -14px 24px;box-shadow:0 4px 24px rgba(13,148,136,.25)}
+.eh-logo{font-size:.7rem;font-weight:800;letter-spacing:2px;color:rgba(255,255,255,.6);text-transform:uppercase;margin-bottom:6px}
+.eh-logo em{color:var(--tl3);font-style:normal}
+.eh-title{font-size:1.4rem;font-weight:900;margin-bottom:4px}
+.eh-sub{font-size:.78rem;color:rgba(255,255,255,.75);line-height:1.5}
+.exam-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3);border-radius:50px;padding:4px 14px;font-size:.68rem;font-weight:700;margin-top:10px}
+
+/* PROGRESS */
+.prog-bar{background:#fff;border-radius:0;padding:10px 16px;border-bottom:2px solid var(--tlbg);position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(13,148,136,.08)}
+.prog-steps{display:flex;gap:0;align-items:center}
+.prog-step{flex:1;text-align:center;font-size:.58rem;font-weight:700;color:#9CA3AF;padding:4px 2px;position:relative}
+.prog-step.active{color:var(--tl);font-weight:800}
+.prog-step.done{color:var(--gn)}
+.prog-step::after{content:'';position:absolute;bottom:-10px;left:50%;transform:translateX(-50%);width:8px;height:8px;border-radius:50%;background:#E5E7EB}
+.prog-step.active::after{background:var(--tl)}
+.prog-step.done::after{background:var(--gn)}
+.prog-line{height:3px;background:#E5E7EB;border-radius:10px;margin:14px 0 6px;position:relative;overflow:visible}
+.prog-fill{height:3px;background:linear-gradient(90deg,var(--tl),var(--pu));border-radius:10px;transition:width .5s ease}
+
+/* SECTIONS */
+.section{display:none}.section.show{display:block;animation:fadeIn .35s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* CARDS */
+.card{background:#fff;border-radius:18px;padding:20px;margin-bottom:16px;box-shadow:var(--shadow);border:1.5px solid var(--border)}
+.card-title{font-size:1rem;font-weight:800;color:var(--dk);margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.card-sub{font-size:.76rem;color:var(--gy);margin-bottom:14px;line-height:1.5}
+.section-badge{display:inline-flex;align-items:center;gap:5px;border-radius:50px;padding:5px 14px;font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-bottom:14px}
+.sb-tl{background:var(--tlbg);color:var(--tl)}
+.sb-pu{background:var(--pulight);color:var(--pu)}
+.sb-go{background:var(--golight);color:var(--go)}
+.sb-gn{background:var(--gnlight);color:var(--gn)}
+
+/* FORM FIELDS */
+label{display:block;font-size:.78rem;font-weight:700;color:var(--dk);margin-bottom:5px}
+input[type=text],input[type=email],input[type=tel],input[type=url],textarea,select{width:100%;border:2px solid #D1D5DB;border-radius:10px;padding:10px 13px;font-size:.9rem;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s;background:#fff;color:var(--dk)}
+input:focus,textarea:focus,select:focus{border-color:var(--tl)}
+.field{margin-bottom:14px}
+.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:420px){.field-grid{grid-template-columns:1fr}}
+
+/* RADIO/CHECKBOX */
+.radio-group,.check-group{display:flex;flex-direction:column;gap:8px}
+.radio-opt,.check-opt{display:flex;align-items:flex-start;gap:10px;background:var(--tllight);border:2px solid var(--border);border-radius:11px;padding:10px 13px;cursor:pointer;transition:all .2s;font-size:.86rem;font-weight:600;color:var(--dk);line-height:1.4}
+.radio-opt:hover,.check-opt:hover{border-color:var(--tl);background:var(--tlbg)}
+.radio-opt input,.check-opt input{margin-top:2px;accent-color:var(--tl);width:16px;height:16px;flex-shrink:0}
+.radio-opt.selected{border-color:var(--tl);background:var(--tlbg)}
+.radio-opt.correct{border-color:var(--gn)!important;background:var(--gnlight)!important}
+.radio-opt.wrong{border-color:var(--rd)!important;background:var(--rdlight)!important}
+
+/* MCQ */
+.q-num{font-size:.68rem;font-weight:800;color:var(--tl);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.q-text{font-size:.9rem;font-weight:700;color:var(--dk);margin-bottom:10px;line-height:1.5}
+.q-item{background:#F9FAFB;border:1.5px solid #E5E7EB;border-radius:10px;padding:11px 14px;margin-bottom:7px;cursor:pointer;transition:all .2s;font-size:.86rem;font-weight:500;color:#374151;display:flex;align-items:center;gap:10px;min-height:46px}
+.q-item:hover{border-color:var(--tl);background:var(--tlbg)}
+.q-item.sel{border-color:var(--pu);background:var(--pulight);font-weight:700;color:var(--pu)}
+.q-item.co{border-color:var(--gn)!important;background:var(--gnlight)!important;color:var(--gn)!important;font-weight:700}
+.q-item.wo{border-color:var(--rd)!important;background:var(--rdlight)!important;color:var(--rd)!important;font-weight:700}
+.q-item.dis{pointer-events:none}
+.q-let{width:24px;height:24px;border-radius:50%;background:#E5E7EB;display:flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:800;flex-shrink:0}
+.sel .q-let{background:var(--pu);color:#fff}
+.co .q-let{background:var(--gn);color:#fff}
+.wo .q-let{background:var(--rd);color:#fff}
+.q-fb{font-size:.76rem;margin-top:6px;padding:7px 11px;border-radius:9px;display:none;line-height:1.4;font-weight:600}
+.q-fb.show{display:block}
+.fb-ok{background:var(--gnlight);color:var(--gn)}
+.fb-bad{background:var(--rdlight);color:var(--rd)}
+
+/* PASSAGE */
+.passage{background:linear-gradient(135deg,#F0FDFA,#ECFDF5);border:2px solid var(--tl3);border-radius:14px;padding:16px;margin-bottom:18px;font-size:.88rem;color:var(--dk);line-height:1.9;font-weight:500}
+.passage-label{font-size:.65rem;font-weight:800;color:var(--tl);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px}
+
+/* AUDIO PLAYER */
+.audio-player{background:linear-gradient(135deg,var(--tl),#0891B2);border-radius:14px;padding:14px;color:#fff;margin-bottom:16px}
+.ap-label{font-size:.68rem;font-weight:800;color:rgba(255,255,255,.65);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px}
+.ap-controls{display:flex;align-items:center;gap:10px}
+.ap-play{background:rgba(255,255,255,.2);border:none;width:44px;height:44px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.1rem;transition:all .2s;flex-shrink:0}
+.ap-play:hover{background:rgba(255,255,255,.3)}
+.ap-play.playing{background:var(--tl3);color:var(--dk)}
+.ap-track{flex:1}
+.ap-bar{height:5px;background:rgba(255,255,255,.2);border-radius:10px;cursor:pointer}
+.ap-fill{height:5px;background:#fff;border-radius:10px;width:0%;transition:width .3s}
+.ap-times{display:flex;justify-content:space-between;font-size:.62rem;color:rgba(255,255,255,.5);margin-top:3px}
+.ap-speeds{display:flex;gap:5px;margin-top:8px}
+.ap-spd{background:rgba(255,255,255,.12);border:none;border-radius:50px;padding:3px 10px;font-size:.68rem;font-weight:700;color:rgba(255,255,255,.7);cursor:pointer;font-family:'Inter',sans-serif}
+.ap-spd.active{background:rgba(255,255,255,.3);color:#fff}
+.ap-listen-count{font-size:.7rem;color:rgba(255,255,255,.55);margin-top:6px;text-align:center}
+
+/* SPEAKING SECTION */
+.spk-q{background:linear-gradient(135deg,var(--pulight),#F5F3FF);border:2px solid #C4B5FD;border-radius:14px;padding:16px;margin-bottom:10px}
+.spk-qnum{font-size:.65rem;font-weight:800;color:var(--pu);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px}
+.spk-qtext{font-size:.9rem;font-weight:700;color:var(--dk);margin-bottom:4px;line-height:1.5}
+.spk-qhint{font-size:.74rem;color:var(--gy);line-height:1.4}
+.spk-qfr{font-size:.8rem;color:var(--pu);font-weight:600;margin-top:5px;font-style:italic}
+
+/* WRITING */
+.writing-prompt{background:var(--golight);border:2px solid #FCD34D;border-radius:13px;padding:14px;margin-bottom:12px}
+.wp-label{font-size:.65rem;font-weight:800;color:var(--go);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.wp-text{font-size:.86rem;font-weight:700;color:var(--dk);line-height:1.55;margin-bottom:6px}
+.wp-guide{font-size:.74rem;color:#92400E;line-height:1.5}
+.wc{font-size:.72rem;color:var(--gy);text-align:right;margin-top:3px}
+
+/* BUTTONS */
+.btn-main{background:linear-gradient(135deg,var(--tl),#0891B2);color:#fff;border:none;border-radius:50px;padding:0 28px;min-height:50px;font-size:.9rem;font-weight:800;cursor:pointer;width:100%;font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 16px rgba(13,148,136,.3);transition:all .2s}
+.btn-main:hover{opacity:.92;transform:translateY(-1px)}
+.btn-sec{background:#fff;color:var(--tl);border:2px solid var(--tl);border-radius:50px;padding:0 22px;min-height:46px;font-size:.86rem;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s}
+.btn-sec:hover{background:var(--tlbg)}
+.btn-pu{background:linear-gradient(135deg,var(--pu),#6D28D9);color:#fff;border:none;border-radius:50px;padding:0 24px;min-height:46px;font-size:.86rem;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;display:inline-flex;align-items:center;gap:6px}
+.nav-row{display:flex;gap:10px;margin-top:18px;align-items:center;justify-content:space-between}
+
+/* SCORE */
+.score-wrap{background:#fff;border-radius:18px;overflow:hidden;box-shadow:var(--shadow);border:1.5px solid var(--border)}
+.score-header{background:linear-gradient(135deg,var(--tl),var(--pu));padding:24px 20px;text-align:center;color:#fff}
+.score-total{font-size:3.5rem;font-weight:900;line-height:1}
+.score-total span{font-size:1.4rem;font-weight:600;opacity:.7}
+.score-label{font-size:.8rem;opacity:.8;margin-top:5px}
+.score-level{display:inline-block;background:rgba(255,255,255,.2);border:2px solid rgba(255,255,255,.4);border-radius:50px;padding:5px 18px;font-size:.8rem;font-weight:800;margin-top:10px}
+.score-body{padding:20px}
+.skill-row{display:flex;align-items:center;gap:12px;margin-bottom:13px}
+.skill-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.skill-info{flex:1}
+.skill-name{font-size:.8rem;font-weight:800;color:var(--dk);margin-bottom:4px}
+.skill-bar{height:8px;background:#E5E7EB;border-radius:10px;overflow:hidden}
+.skill-fill{height:8px;border-radius:10px;transition:width 1s ease .3s}
+.skill-score{font-size:.8rem;font-weight:800;flex-shrink:0;min-width:40px;text-align:right}
+.profile-tag{display:inline-flex;align-items:center;gap:5px;border-radius:50px;padding:5px 14px;font-size:.74rem;font-weight:700;margin:4px}
+.profile-box{background:var(--tlbg);border-radius:14px;padding:16px;margin-top:16px}
+.profile-box h4{font-size:.84rem;font-weight:800;color:var(--dk);margin-bottom:10px}
+.next-box{background:linear-gradient(135deg,var(--pulight),var(--tlbg));border:1.5px solid #C4B5FD;border-radius:14px;padding:16px;margin-top:14px}
+.next-box h4{font-size:.84rem;font-weight:800;color:var(--pu);margin-bottom:8px}
+.next-item{display:flex;align-items:flex-start;gap:8px;font-size:.8rem;color:var(--dk);line-height:1.45;margin-bottom:6px}
+.cta-box{background:linear-gradient(135deg,var(--tl),var(--pu));border-radius:16px;padding:20px;text-align:center;margin-top:16px;color:#fff}
+.cta-box h3{font-size:1rem;font-weight:800;margin-bottom:5px}
+.cta-box p{font-size:.78rem;opacity:.82;margin-bottom:14px;line-height:1.5}
+.btn-cta{background:#fff;color:var(--tl);border:none;border-radius:50px;padding:10px 28px;font-size:.88rem;font-weight:800;cursor:pointer;font-family:'Inter',sans-serif;display:inline-block;text-decoration:none}
+
+/* LEAD FORM */
+.goal-chip{border:2px solid var(--border);border-radius:10px;padding:9px 12px;cursor:pointer;transition:all .2s;font-size:.82rem;font-weight:600;color:var(--dk);display:flex;align-items:center;gap:8px;min-height:44px;background:#fff}
+.goal-chip:hover{border-color:var(--tl);background:var(--tlbg)}
+.goal-chip.sel{border-color:var(--pu);background:var(--pulight);color:var(--pu);font-weight:700}
+.goal-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+@media(max-width:400px){.goal-grid{grid-template-columns:1fr}}
+
+/* SCORE HELPERS */
+.score-chip{display:inline-flex;align-items:center;gap:4px;border-radius:50px;padding:3px 10px;font-size:.68rem;font-weight:800}
+.sc-ex{background:var(--gnlight);color:var(--gn)}
+.sc-gd{background:var(--tlbg);color:var(--tl)}
+.sc-av{background:var(--golight);color:var(--go)}
+.sc-nd{background:var(--rdlight);color:var(--rd)}
+
+/* NOTICE */
+.notice{background:var(--golight);border:1.5px solid #FCD34D;border-radius:12px;padding:12px 14px;font-size:.78rem;color:#92400E;font-weight:600;line-height:1.55;margin-bottom:14px;display:flex;gap:8px}
+</style>
+</head>
+<body>
+
+<div class="exam-header">
+  <div class="eh-logo">FAST <em>FRENCH</em> LAB · Coach Linda</div>
+  <div class="eh-title">French A1 Placement Test</div>
+  <div class="eh-sub">Discover your true French level in 20–25 minutes · DELF A1 exam format · 4 skills evaluated</div>
+  <div class="exam-tag">🎯 TCF Canada · TEF Canada · DELF A1 · Career · Language Love</div>
+</div>
+
+<div class="prog-bar" id="progBar" style="display:none">
+  <div class="prog-line"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+  <div class="prog-steps">
+    <div class="prog-step" id="ps0">Profile</div>
+    <div class="prog-step" id="ps1">Reading</div>
+    <div class="prog-step" id="ps2">Writing</div>
+    <div class="prog-step" id="ps3">Listening</div>
+    <div class="prog-step" id="ps4">Speaking</div>
+    <div class="prog-step" id="ps5">Results</div>
+  </div>
+</div>
+
+<div class="page">
+
+<!-- ===== SECTION 0: LEAD CAPTURE ===== -->
+<div class="section show" id="sec0">
+  <div class="card">
+    <div class="card-title">👋 Before We Begin</div>
+    <div class="card-sub">This takes about 20–25 minutes. Please complete all 4 sections for an accurate result. Your profile helps us personalise your learning path.</div>
+
+    <div class="field field-grid">
+      <div><label>First Name *</label><input type="text" id="fname" placeholder="Your first name"></div>
+      <div><label>Last Name *</label><input type="text" id="lname" placeholder="Your last name"></div>
+    </div>
+    <div class="field"><label>Email Address *</label><input type="email" id="femail" placeholder="your@email.com"></div>
+    <div class="field"><label>WhatsApp Number *</label><input type="tel" id="fphone" placeholder="+234 or your number"></div>
+
+    <div class="field">
+      <label>What is your French goal? (select all that apply)</label>
+      <div class="goal-grid" id="goalGrid">
+        <div class="goal-chip" onclick="toggleGoal(this,'TCF Canada PR')">🇨🇦 TCF Canada — PR</div>
+        <div class="goal-chip" onclick="toggleGoal(this,'TEF Canada PR')">🇨🇦 TEF Canada — PR</div>
+        <div class="goal-chip" onclick="toggleGoal(this,'DELF Exam')">📋 DELF Exam</div>
+        <div class="goal-chip" onclick="toggleGoal(this,'University in France/Canada')">🎓 French University</div>
+        <div class="goal-chip" onclick="toggleGoal(this,'Career Boost')">💼 Career Boost</div>
+        <div class="goal-chip" onclick="toggleGoal(this,'Travel to France')">✈️ Travel to France</div>
+        <div class="goal-chip" onclick="toggleGoal(this,'Love of Language')">💜 Language Love</div>
+        <div class="goal-chip" onclick="toggleGoal(this,'Other')">💬 Other</div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>When do you learn best?</label>
+      <select id="learnTime">
+        <option value="">Select your best learning time</option>
+        <option>Early morning (before 8am)</option>
+        <option>Morning (8am–12pm)</option>
+        <option>Afternoon (12pm–5pm)</option>
+        <option>Evening (5pm–9pm)</option>
+        <option>Late night (after 9pm)</option>
+        <option>Weekends only</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>How many hours per day can you commit?</label>
+      <select id="hours">
+        <option value="">Select hours</option>
+        <option>30 minutes</option>
+        <option>1 hour</option>
+        <option>2 hours</option>
+        <option>3+ hours</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>What is your claimed French level right now?</label>
+      <select id="claimedLevel">
+        <option value="">Be honest — this helps us calibrate</option>
+        <option>Complete beginner (zero French)</option>
+        <option>I know the alphabet and some words</option>
+        <option>I know greetings and basic phrases</option>
+        <option>I can have very basic conversations</option>
+        <option>I studied French at school years ago</option>
+      </select>
+    </div>
+
+    <div class="notice">⚠️ <span><strong>Important:</strong> This test evaluates your actual French level — not what you think it is. Answer honestly. There are no wrong choices on the placement test. Knowing where you truly are is the first step to getting where you want to go.</span></div>
+
+    <button class="btn-main" onclick="startTest()">Start My Placement Test →</button>
+  </div>
+</div>
+
+<!-- ===== SECTION 1: READING ===== -->
+<div class="section" id="sec1">
+  <div class="section-badge sb-tl">📖 Section 1: Compréhension Écrite · Reading · /25</div>
+  <div class="notice">⚠️ <span>Read the passage carefully before answering. No dictionary allowed for this section. 10 questions · 2.5 points each</span></div>
+
+  <div class="passage">
+    <div class="passage-label">📄 Read this text:</div>
+    Bonjour! Je m'appelle Amara. J'ai vingt-huit ans. Je suis nigériane et j'habite à Lagos. Je suis infirmière dans un grand hôpital. J'ai un frère et deux sœurs. Mon frère s'appelle Chidi. Il a vingt-cinq ans et il est étudiant à l'université. Ma sœur aînée s'appelle Grace. Elle est professeure. Elle a trente-deux ans et elle est très intelligente. J'habite dans un appartement au deuxième étage avec ma famille. Mon appartement a un grand salon, deux chambres et une cuisine moderne. J'aime mon quartier parce qu'il est calme. Le week-end, je regarde des films français pour apprendre le français. Mon objectif est de passer le TCF Canada pour obtenir ma résidence permanente au Canada.
+  </div>
+
+  <div id="readingQs"></div>
+
+  <div class="nav-row">
+    <button class="btn-sec" onclick="goSec(0)">← Back</button>
+    <button class="btn-main" style="flex:1;max-width:260px" onclick="submitReading()">Submit Reading →</button>
+  </div>
+</div>
+
+<!-- ===== SECTION 2: WRITING ===== -->
+<div class="section" id="sec2">
+  <div class="section-badge sb-go">✍️ Section 2: Production Écrite · Writing · /25</div>
+  <div class="notice">⚠️ <span>Write in French. You may use a dictionary but NOT a translator. Your own sentences only. Present tense.</span></div>
+
+  <div class="card">
+    <div class="card-title">✍️ Writing Task 1 — Fill in the Gaps (10 pts)</div>
+    <div class="card-sub">Complete each sentence with the correct French word. Choose from the context. Spelling counts.</div>
+    <div id="writeFills"></div>
+    <div class="aud-row" style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn-pu" onclick="checkFills()">✅ Check Gaps</button>
+      <button class="btn-sec" onclick="resetFills()">🔄 Reset</button>
+    </div>
+    <div id="fillsFb" style="display:none;margin-top:10px;padding:11px 13px;border-radius:10px;font-size:.8rem;font-weight:700"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">✍️ Writing Task 2 — Short Composition (15 pts)</div>
+    <div class="card-sub">Write 6–10 sentences in French. Use the prompts below. Aim for 60–100 words.</div>
+    <div class="writing-prompt">
+      <div class="wp-label">Your Writing Task</div>
+      <div class="wp-text">Write a short paragraph introducing yourself and one family member. Include:</div>
+      <div class="wp-guide">
+        ✓ Your name, age, nationality and city<br>
+        ✓ Your job or studies<br>
+        ✓ One family member: name, age, job, one adjective to describe them<br>
+        ✓ Where you live (type of home, neighbourhood)<br>
+        ✓ Why you are learning French
+      </div>
+    </div>
+    <textarea id="writingComp" rows="8" placeholder="Écrivez ici en français... Write here in French..." oninput="updateWC()"></textarea>
+    <div class="wc" id="wcDisplay">0 words</div>
+    <button class="btn-main" style="margin-top:10px" onclick="checkWriting()">✅ Check My Writing</button>
+    <div id="writingFb" style="display:none;margin-top:10px;padding:13px;border-radius:12px;font-size:.82rem;font-weight:600;line-height:1.6"></div>
+  </div>
+
+  <div class="nav-row">
+    <button class="btn-sec" onclick="goSec(1)">← Back</button>
+    <button class="btn-main" style="flex:1;max-width:260px" onclick="goSec(3)">Next: Listening →</button>
+  </div>
+</div>
+
+<!-- ===== SECTION 3: LISTENING ===== -->
+<div class="section" id="sec3">
+  <div class="section-badge sb-pu">🎧 Section 3: Compréhension Orale · Listening · /25</div>
+  <div class="notice">⚠️ <span>Listen to each audio carefully. You may listen up to 3 times. Then answer the questions.</span></div>
+
+  <div id="listeningParts"></div>
+
+  <div class="nav-row">
+    <button class="btn-sec" onclick="goSec(2)">← Back</button>
+    <button class="btn-main" style="flex:1;max-width:260px" onclick="submitListening()">Submit Listening →</button>
+  </div>
+</div>
+
+<!-- ===== SECTION 4: SPEAKING ===== -->
+<div class="section" id="sec4">
+  <div class="section-badge sb-gn">🎤 Section 4: Production Orale · Speaking · /25</div>
+
+  <div class="card">
+    <div class="card-title">🎤 How the Speaking Section Works</div>
+    <div class="card-sub">You will answer 5 interview-style questions in French. Your answers will be evaluated by Coach Linda personally within 48 hours.</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+      <div style="background:var(--tlbg);border-radius:12px;padding:12px;border:1.5px solid var(--tl3)">
+        <div style="font-size:.7rem;font-weight:800;color:var(--tl);margin-bottom:5px">STEP 1</div>
+        <div style="font-size:.8rem;font-weight:600;color:var(--dk)">Read all 5 questions below. Take 2 minutes to prepare your answers.</div>
+      </div>
+      <div style="background:var(--pulight);border-radius:12px;padding:12px;border:1.5px solid #C4B5FD">
+        <div style="font-size:.7rem;font-weight:800;color:var(--pu);margin-bottom:5px">STEP 2</div>
+        <div style="font-size:.8rem;font-weight:600;color:var(--dk)">Record a video on your phone answering ALL 5 questions in French.</div>
+      </div>
+      <div style="background:var(--golight);border-radius:12px;padding:12px;border:1.5px solid #FCD34D">
+        <div style="font-size:.7rem;font-weight:800;color:var(--go);margin-bottom:5px">STEP 3</div>
+        <div style="font-size:.8rem;font-weight:600;color:var(--dk)">Upload the video to Google Drive and copy the sharing link.</div>
+      </div>
+      <div style="background:var(--gnlight);border-radius:12px;padding:12px;border:1.5px solid #6EE7B7">
+        <div style="font-size:.7rem;font-weight:800;color:var(--gn);margin-bottom:5px">STEP 4</div>
+        <div style="font-size:.8rem;font-weight:600;color:var(--dk)">Paste your video link in the box below and submit.</div>
+      </div>
+    </div>
+    <div style="background:#F3F4F6;border-radius:10px;padding:10px 13px;font-size:.76rem;color:var(--gy)">
+      💡 <strong>Tip:</strong> Speak clearly and at a natural pace. Mistakes are expected and okay — what we are evaluating is your ability to communicate, not perfection. Aim for 3–5 minutes total for all 5 questions.
+    </div>
+  </div>
+
+  <div style="font-size:.82rem;font-weight:800;color:var(--dk);margin-bottom:10px">🎤 Your 5 Interview Questions:</div>
+  <div id="speakingQs"></div>
+
+  <div class="card" style="margin-top:14px">
+    <div class="card-title">📎 Submit Your Speaking Video</div>
+    <div class="card-sub">Upload your video to Google Drive → right click → "Get shareable link" → set to "Anyone with the link" → paste below.</div>
+    <div class="field">
+      <label>Google Drive Video Link</label>
+      <input type="url" id="videoLink" placeholder="https://drive.google.com/file/d/...">
+    </div>
+    <div style="font-size:.76rem;color:var(--gy);margin-bottom:12px;padding:9px 12px;background:#F9FAFB;border-radius:9px;line-height:1.5">
+      🔒 Your video is private to you and Coach Linda. It will not be shared with anyone else. It is used only to evaluate your speaking level and will be deleted after scoring.
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📸 Can't record a video right now?</div>
+    <div class="card-sub">Screenshot the 5 questions above, record your answers as a voice note, and send to Coach Linda on WhatsApp with "My speaking test" in the message.</div>
+    <button class="btn-pu" onclick="printSpeaking()">📥 Download Speaking Questions</button>
+  </div>
+
+  <div class="nav-row">
+    <button class="btn-sec" onclick="goSec(3)">← Back</button>
+    <button class="btn-main" style="flex:1;max-width:260px" onclick="submitAll()">Submit & See My Results →</button>
+  </div>
+</div>
+
+<!-- ===== SECTION 5: RESULTS ===== -->
+<div class="section" id="sec5">
+  <div id="resultsContent"></div>
+</div>
+
+</div><!-- end page -->
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+const READING_QS=[
+  {n:1,q:"What is Amara's job?",opts:["Teacher","Nurse","Doctor","Student"],ans:1,fb:"Line 3: 'Je suis infirmière' = I am a nurse."},
+  {n:2,q:"How old is Amara?",opts:["25","30","28","32"],ans:2,fb:"Line 1: 'J'ai vingt-huit ans' = I am 28 years old."},
+  {n:3,q:"How many siblings does Amara have?",opts:["One brother only","One brother and one sister","One brother and two sisters","Two brothers"],ans:2,fb:"Line 4: 'J'ai un frère et deux sœurs' = I have one brother and two sisters."},
+  {n:4,q:"What does Chidi (Amara's brother) do?",opts:["He is a teacher","He is a nurse","He is a student","He is unemployed"],ans:2,fb:"Line 5: 'il est étudiant à l'université' = he is a university student."},
+  {n:5,q:"On which floor does Amara live?",opts:["First floor","Ground floor","Third floor","Second floor"],ans:3,fb:"Line 8: 'au deuxième étage' = on the second floor."},
+  {n:6,q:"What does Amara do on weekends?",opts:["She works at the hospital","She watches French films","She visits her sister","She studies at university"],ans:1,fb:"Line 11: 'je regarde des films français' = I watch French films."},
+  {n:7,q:"Why is Amara learning French?",opts:["For her job","For travel to France","To pass the TCF Canada for permanent residency","Because she loves languages"],ans:2,fb:"Last line: 'pour passer le TCF Canada pour obtenir ma résidence permanente' = to pass TCF Canada to get permanent residency."},
+  {n:8,q:"How would you describe Amara's neighbourhood?",opts:["Noisy and modern","Calm","Far from work","Near a university"],ans:1,fb:"Line 10: 'mon quartier parce qu'il est calme' = my neighbourhood because it is calm."},
+  {n:9,q:"'Elle est très intelligente' refers to which family member?",opts:["Amara","Chidi","Grace (the eldest sister)","Amara's mother"],ans:2,fb:"Line 6-7: Grace, the eldest sister, is described as very intelligent."},
+  {n:10,q:"'J'habite dans un appartement' means:",opts:["I live in a house","I own an apartment","I live in an apartment","I work in a building"],ans:2,fb:"Habiter = to live · dans = in · un appartement = an apartment."}
+];
+
+const WRITE_FILLS=[
+  {before:"Je m'appelle Sophie et j'ai trente ",blank:"ans",after:".",hint:"years = ?",note:"ans = years (for age). J'ai trente ans = I am 30 years old."},
+  {before:"Je ",blank:"suis",after:" médecin dans un hôpital.",hint:"I am (verb) = ?",note:"suis = am. Je suis médecin = I am a doctor."},
+  {before:"Mon frère ",blank:"s'appelle",after:" Marc. Il a vingt-cinq ans.",hint:"His name is... = il ___",note:"s'appelle = is called. Mon frère s'appelle Marc = My brother is called Marc."},
+  {before:"J'habite dans ",blank:"un",after:" appartement au centre-ville.",hint:"Article for appartement (masculine): ___",note:"Appartement is masculine → un appartement. La/le/un/une."},
+  {before:"Ma sœur est ",blank:"grande",after:" et très gentille.",hint:"tall (feminine form) = ?",note:"Grand is the masculine form. Feminine = grande. Ma sœur (feminine) = grande."},
+  {before:"Nous avons ",blank:"deux",after:" chambres et un salon.",hint:"the number 2 in French = ?",note:"Deux = two. Nous avons deux chambres = we have two bedrooms."},
+  {before:"Je ",blank:"travaille",after:" près de chez moi.",hint:"-ER verb 'to work' (je form) = ?",note:"Travailler → je travaille. Remove -er, add -e for je."},
+  {before:"Mon quartier est ",blank:"calme",after:" et agréable.",hint:"the adjective 'calm' in French = ?",note:"Calme = calm. One of the most useful French adjectives for TCF."}
+];
+
+const LISTEN_PARTS=[
+  {
+    id:"l1",label:"Document 1 — A Phone Introduction",
+    text:"Allô? Bonjour! Je m'appelle Thomas. J'ai trente-cinq ans. Je suis ingénieur. J'habite à Lyon avec ma femme et mes deux enfants. Mon fils a dix ans et ma fille a huit ans. J'apprends le français parce que je veux travailler au Canada.",
+    qs:[
+      {n:1,q:"How old is Thomas?",opts:["25","35","30","45"],ans:1,fb:"'J'ai trente-cinq ans' = I am 35 years old."},
+      {n:2,q:"What is Thomas's job?",opts:["Doctor","Teacher","Engineer","Architect"],ans:2,fb:"'Je suis ingénieur' = I am an engineer."},
+      {n:3,q:"How many children does Thomas have?",opts:["One","Three","Four","Two"],ans:3,fb:"'mes deux enfants' = my two children."},
+      {n:4,q:"Why is Thomas learning French?",opts:["For travel","To work in Canada","For his children","Because he loves French"],ans:1,fb:"'je veux travailler au Canada' = I want to work in Canada."},
+      {n:5,q:"Where does Thomas live?",opts:["Paris","Montreal","Lyon","Bordeaux"],ans:2,fb:"'J'habite à Lyon' = I live in Lyon."}
+    ]
+  },
+  {
+    id:"l2",label:"Document 2 — A Family Description",
+    text:"Bonjour, je m'appelle Claire. Dans ma famille, nous sommes cinq. Mon père s'appelle Jean. Il a soixante ans. Il est retraité. Ma mère s'appelle Marie. Elle a cinquante-huit ans. Elle est professeure. Elle est grande et très intelligente. Mon frère aîné est médecin. Il habite à Paris.",
+    qs:[
+      {n:6,q:"How many people are in Claire's family?",opts:["Three","Four","Five","Six"],ans:2,fb:"'nous sommes cinq' = there are five of us."},
+      {n:7,q:"What does Claire's father do?",opts:["He is a doctor","He is a teacher","He is retired","He is an engineer"],ans:2,fb:"'Il est retraité' = He is retired."},
+      {n:8,q:"How old is Claire's mother?",opts:["60","55","50","58"],ans:3,fb:"'Elle a cinquante-huit ans' = She is 58 years old."},
+      {n:9,q:"How is Claire's mother described?",opts:["Short and funny","Tall and intelligent","Calm and generous","Kind and sporty"],ans:1,fb:"'Elle est grande et très intelligente' = She is tall and very intelligent."},
+      {n:10,q:"Where does Claire's elder brother live?",opts:["Lyon","Bordeaux","Paris","Marseille"],ans:2,fb:"'Il habite à Paris' = He lives in Paris."}
+    ]
+  }
+];
+
+const SPEAKING_QS=[
+  {n:1,q:"Please introduce yourself.",fr:"Présentez-vous.",hint:"Say your name, age, nationality, city, and job/studies. 4–5 sentences.",time:"45–60 seconds"},
+  {n:2,q:"Tell me about your family.",fr:"Parlez de votre famille.",hint:"Describe at least 2 family members: name, age, job, one adjective.",time:"60–90 seconds"},
+  {n:3,q:"Describe where you live.",fr:"Décrivez votre logement.",hint:"Type of home, area, rooms, who you live with. Use habiter and il y a.",time:"45–60 seconds"},
+  {n:4,q:"Why are you learning French?",fr:"Pourquoi apprenez-vous le français?",hint:"Be honest. TCF? TEF? Career? Travel? Use: je veux... / mon objectif est de...",time:"30–45 seconds"},
+  {n:5,q:"What do you do in a typical day?",fr:"Qu'est-ce que vous faites dans une journée typique?",hint:"Use -ER verbs: je travaille, je mange, je regarde, je parle, j'écoute.",time:"45–60 seconds"}
+];
+
+// ============================================================
+// STATE
+// ============================================================
+let currentSec=0;
+let readingSel={};let listeningSelState={};let fillsDone=false;
+let writingScore=0;let readingScore=0;let listeningScore=0;
+let userData={};let userGoals=[];let listenCounts={};
+
+// ============================================================
+// INIT
+// ============================================================
+window.addEventListener('load',()=>{
+  renderReadingQs();renderWriteFills();renderListening();renderSpeaking();
+  window.speechSynthesis.onvoiceschanged=()=>window.speechSynthesis.getVoices();
+  window.speechSynthesis.getVoices();
+});
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function goSec(n){
+  document.getElementById('sec'+currentSec).classList.remove('show');
+  currentSec=n;
+  document.getElementById('sec'+n).classList.add('show');
+  document.getElementById('progBar').style.display=n>0?'block':'none';
+  updateProg(n);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function updateProg(n){
+  const pct=[0,20,40,60,80,100][n]||0;
+  document.getElementById('progFill').style.width=pct+'%';
+  for(let i=0;i<6;i++){
+    const el=document.getElementById('ps'+i);
+    if(el)el.className='prog-step'+(i<n?' done':i===n?' active':'');
+  }
+}
+function startTest(){
+  const fn=document.getElementById('fname').value.trim();
+  const em=document.getElementById('femail').value.trim();
+  const ph=document.getElementById('fphone').value.trim();
+  if(!fn||!em||!ph){alert('Please fill in your name, email and WhatsApp number to continue.');return;}
+  userData={name:fn,email:em,phone:ph,goals:userGoals,learnTime:document.getElementById('learnTime').value,hours:document.getElementById('hours').value,claimed:document.getElementById('claimedLevel').value};
+  goSec(1);
+}
+function toggleGoal(el,goal){
+  el.classList.toggle('sel');
+  if(el.classList.contains('sel'))userGoals.push(goal);else userGoals=userGoals.filter(g=>g!==goal);
+}
+
+// ============================================================
+// READING
+// ============================================================
+function renderReadingQs(){
+  document.getElementById('readingQs').innerHTML=READING_QS.map(q=>`
+    <div class="card" style="margin-bottom:12px" id="rq${q.n}">
+      <div class="q-num">Question ${q.n} of 10</div>
+      <div class="q-text">${q.q}</div>
+      ${q.opts.map((o,j)=>`<div class="q-item" id="ro${q.n}_${j}" onclick="selRead(${q.n},${j})">
+        <div class="q-let">${String.fromCharCode(65+j)}</div>${o}</div>`).join('')}
+      <div class="q-fb" id="rfb${q.n}"></div>
+    </div>`).join('');
+}
+function selRead(qi,oi){
+  if(readingSel[qi]!==undefined)return;
+  readingSel[qi]=oi;
+  const q=READING_QS.find(q=>q.n===qi);
+  const ok=oi===q.ans;
+  [0,1,2,3].forEach(j=>{
+    const el=document.getElementById(`ro${qi}_${j}`);if(!el)return;
+    el.classList.add('dis');
+    if(j===q.ans)el.classList.add('co');else if(j===oi&&!ok)el.classList.add('wo');
+  });
+  const fb=document.getElementById('rfb'+qi);
+  fb.textContent=(ok?'✅ Correct! ':'❌ Incorrect. ')+q.fb;
+  fb.className='q-fb show '+(ok?'fb-ok':'fb-bad');
+  if(ok)readingScore+=2.5;
+}
+function submitReading(){
+  const done=Object.keys(readingSel).length;
+  if(done<10){if(!confirm(`You have answered ${done}/10 questions. Submit anyway?`))return;}
+  goSec(2);
+}
+
+// ============================================================
+// WRITING FILLS
+// ============================================================
+function renderWriteFills(){
+  document.getElementById('writeFills').innerHTML=WRITE_FILLS.map((f,i)=>`
+    <div style="background:#F9FAFB;border-radius:12px;padding:12px 14px;margin-bottom:9px;border:1.5px solid #E5E7EB" id="wfw${i}">
+      <div style="font-size:.7rem;font-weight:800;color:var(--tl);text-transform:uppercase;letter-spacing:1px;margin-bottom:7px">Gap ${i+1}</div>
+      <div style="font-size:.9rem;font-weight:600;color:var(--dk);line-height:1.8">${f.before}<input style="border:2px solid #D1D5DB;border-radius:8px;padding:5px 10px;font-size:.88rem;font-family:'Inter',sans-serif;outline:none;display:inline-block;min-width:90px;max-width:160px;vertical-align:middle;transition:border-color .2s" id="wfi${i}" placeholder="${f.hint}" autocomplete="off" autocorrect="off" spellcheck="false">${f.after}</div>
+      <div id="wff${i}" style="display:none;font-size:.74rem;font-weight:600;margin-top:6px;padding:6px 10px;border-radius:8px"></div>
+    </div>`).join('');
+}
+function checkFills(){
+  let score=0;
+  WRITE_FILLS.forEach((f,i)=>{
+    const val=document.getElementById('wfi'+i).value.trim().toLowerCase();
+    const ok=val===f.blank.toLowerCase();
+    const inp=document.getElementById('wfi'+i);
+    inp.style.borderColor=ok?'var(--gn)':'var(--rd)';
+    inp.style.background=ok?'#D1FAE5':'#FEE2E2';
+    const fb=document.getElementById('wff'+i);fb.style.display='block';
+    if(ok){fb.style.background='#D1FAE5';fb.style.color=var_gn();fb.textContent='✅ '+f.note;score+=1.25;}
+    else{fb.style.background='#FEE2E2';fb.style.color='#DC2626';fb.textContent='❌ Answer: "'+f.blank+'" — '+f.note;}
+    document.getElementById('wfw'+i).style.borderColor=ok?'var(--gn)':'var(--rd)';
+  });
+  const fb=document.getElementById('fillsFb');fb.style.display='block';
+  fb.style.background=score>=8?'#D1FAE5':'#FEF3C7';
+  fb.style.color=score>=8?'#065F46':'#92400E';
+  fb.textContent='Score: '+score.toFixed(1)+'/10. '+(score>=8?'Excellent gap-filling accuracy!':'Review the explanations above and try again.');
+  writingScore=score;
+}
+function resetFills(){
+  WRITE_FILLS.forEach((_,i)=>{const inp=document.getElementById('wfi'+i);inp.value='';inp.style.borderColor='#D1D5DB';inp.style.background='#fff';document.getElementById('wff'+i).style.display='none';document.getElementById('wfw'+i).style.borderColor='#E5E7EB';});
+  document.getElementById('fillsFb').style.display='none';writingScore=0;
+}
+function var_gn(){return '#065F46';}
+
+function updateWC(){const t=document.getElementById('writingComp').value.trim();document.getElementById('wcDisplay').textContent=(t?t.split(/\s+/).length:0)+' words';}
+
+function checkWriting(){
+  const t=document.getElementById('writingComp').value.trim();
+  if(!t){alert('Please write your paragraph first.');return;}
+  const wc=t?t.split(/\s+/).length:0;
+  const checks={
+    hasIntro:/m'appelle|je suis|j'ai|j'ai/i.test(t),
+    hasAge:/ans/i.test(t),
+    hasFamily:/frère|sœur|père|mère|famille|ami|fils|fille/i.test(t),
+    hasAdj:/grand|petit|intelligent|gentil|sportif|drôle|calme|sérieux|généreux|belle|beau/i.test(t),
+    hasHome:/habite|appartement|maison|quartier|rue|salon|cuisine/i.test(t),
+    hasReason:/parce que|pour|veux|objectif|TCF|TEF|Canada|DELF|apprendre/i.test(t),
+    hasVerb:/travaille|étudie|habite|aime|regarde|parle|mange|lis/i.test(t),
+    goodLength:wc>=40
+  };
+  let pts=0;let ok=[];let issues=[];
+  if(checks.hasIntro){pts+=2;ok.push('✅ Self-introduction present');}else issues.push('❌ Include your name and age: Je m\'appelle... / J\'ai ... ans.');
+  if(checks.hasAge){pts+=1.5;ok.push('✅ Age mentioned');}else issues.push('❌ Add age: J\'ai [number] ans.');
+  if(checks.hasFamily){pts+=2;ok.push('✅ Family member mentioned');}else issues.push('❌ Describe a family member: Mon frère / Ma sœur...');
+  if(checks.hasAdj){pts+=2;ok.push('✅ Adjective used');}else issues.push('❌ Use an adjective: grand, intelligent, gentil, calme...');
+  if(checks.hasHome){pts+=2;ok.push('✅ Home/location described');}else issues.push('❌ Describe where you live: J\'habite dans...');
+  if(checks.hasReason){pts+=2;ok.push('✅ Reason for learning French mentioned');}else issues.push('❌ Why are you learning French? Je veux... / Mon objectif est de...');
+  if(checks.hasVerb){pts+=1.5;ok.push('✅ -ER verb used');}else issues.push('❌ Include a verb beyond être/avoir: travailler, habiter, aimer...');
+  if(checks.goodLength){pts+=2;ok.push('✅ Good length (40+ words)');}else issues.push('❌ Write more: aim for 60–100 words for a full A1 paragraph.');
+  writingScore+=pts;
+  const fb=document.getElementById('writingFb');fb.style.display='block';
+  fb.style.background=pts>=12?'#D1FAE5':'#FEF3C7';
+  fb.style.color=pts>=12?'#065F46':'#92400E';
+  fb.innerHTML=`<strong>Writing Task 2 Score: ${pts.toFixed(1)}/15</strong><br><br>`+ok.map(o=>`<div>${o}</div>`).join('')+(issues.length?'<br>'+issues.map(i=>`<div>${i}</div>`).join(''):'');
+}
+
+// ============================================================
+// LISTENING
+// ============================================================
+function renderListening(){
+  document.getElementById('listeningParts').innerHTML=LISTEN_PARTS.map((part,pi)=>`
+    <div class="card" style="margin-bottom:16px">
+      <div class="section-badge sb-pu" style="margin-bottom:12px">${part.label}</div>
+      <div class="audio-player" id="ap${pi}">
+        <div class="ap-label">🎧 Listen to the audio</div>
+        <div class="ap-controls">
+          <button class="ap-play" id="apBtn${pi}" onclick="playAudio(${pi})">▶</button>
+          <div class="ap-track">
+            <div class="ap-bar"><div class="ap-fill" id="apFill${pi}"></div></div>
+            <div class="ap-times"><span id="apT${pi}">0:00</span><span>~0:30</span></div>
+          </div>
+        </div>
+        <div class="ap-speeds">
+          <button class="ap-spd active" onclick="setSpd(${pi},0.82,this)">Normal</button>
+          <button class="ap-spd" onclick="setSpd(${pi},0.55,this)">Slow</button>
+        </div>
+        <div class="ap-listen-count" id="apCount${pi}">Listens: 0 / 3</div>
+      </div>
+      ${part.qs.map(q=>`
+        <div style="margin-bottom:14px" id="lq${q.n}">
+          <div class="q-num">Question ${q.n} of 10</div>
+          <div class="q-text">${q.q}</div>
+          ${q.opts.map((o,j)=>`<div class="q-item" id="lo${q.n}_${j}" onclick="selListen(${q.n},${j},${pi})">
+            <div class="q-let">${String.fromCharCode(65+j)}</div>${o}</div>`).join('')}
+          <div class="q-fb" id="lfb${q.n}"></div>
+        </div>`).join('')}
+    </div>`).join('');
+  listenCounts={0:0,1:0};
+}
+
+const audioSpeeds={0:0.82,1:0.82};
+function playAudio(pi){
+  const count=listenCounts[pi]||0;
+  if(count>=3){alert('You have used all 3 listens for this audio.');return;}
+  listenCounts[pi]=(count+1);
+  document.getElementById('apCount'+pi).textContent=`Listens: ${listenCounts[pi]} / 3`;
+  const btn=document.getElementById('apBtn'+pi);
+  btn.classList.add('playing');btn.textContent='⏸';
+  window.speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(LISTEN_PARTS[pi].text);
+  const vs=window.speechSynthesis.getVoices();
+  const v=vs.find(v=>v.lang==='fr-FR')||vs.find(v=>v.lang.startsWith('fr'));
+  if(v)u.voice=v;u.lang='fr-FR';u.rate=audioSpeeds[pi]||0.82;
+  u.onend=()=>{btn.classList.remove('playing');btn.textContent='▶';document.getElementById('apFill'+pi).style.width='100%';};
+  u.onboundary=(e)=>{if(u.text.length>0){const pct=Math.min(100,(e.charIndex/u.text.length)*100);document.getElementById('apFill'+pi).style.width=pct+'%';}};
+  window.speechSynthesis.speak(u);
+}
+function setSpd(pi,spd,btn){
+  audioSpeeds[pi]=spd;
+  document.querySelectorAll(`#ap${pi} .ap-spd`).forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function selListen(qi,oi,pi){
+  if(listeningSelState[qi]!==undefined)return;
+  listeningSelState[qi]=oi;
+  const allQs=[...LISTEN_PARTS[0].qs,...LISTEN_PARTS[1].qs];
+  const q=allQs.find(q=>q.n===qi);
+  const ok=oi===q.ans;
+  [0,1,2,3].forEach(j=>{const el=document.getElementById(`lo${qi}_${j}`);if(!el)return;el.classList.add('dis');if(j===q.ans)el.classList.add('co');else if(j===oi&&!ok)el.classList.add('wo');});
+  const fb=document.getElementById('lfb'+qi);fb.textContent=(ok?'✅ Correct! ':'❌ ')+q.fb;fb.className='q-fb show '+(ok?'fb-ok':'fb-bad');
+  if(ok)listeningScore+=2.5;
+}
+function submitListening(){
+  const done=Object.keys(listeningSelState).length;
+  if(done<10){if(!confirm(`You have answered ${done}/10 questions. Submit anyway?`))return;}
+  goSec(4);
+}
+
+// ============================================================
+// SPEAKING
+// ============================================================
+function renderSpeaking(){
+  document.getElementById('speakingQs').innerHTML=SPEAKING_QS.map(q=>`
+    <div class="spk-q">
+      <div class="spk-qnum">Question ${q.n} of 5 · ${q.time}</div>
+      <div class="spk-qtext">${q.q}</div>
+      <div class="spk-qfr">"${q.fr}"</div>
+      <div class="spk-qhint">💡 ${q.hint}</div>
+    </div>`).join('');
+}
+function printSpeaking(){
+  const w=window.open('','_blank');
+  w.document.write(`<html><head><title>Fast French Lab — Speaking Questions</title><style>body{font-family:Arial;padding:30px;max-width:600px;margin:0 auto}h1{color:#0D9488}h3{color:#7C3AED}.q{background:#F0FDFA;border:2px solid #99F6E4;border-radius:10px;padding:15px;margin-bottom:15px}.hint{color:#6B7280;font-size:13px}</style></head><body><h1>Fast French Lab — A1 Speaking Test</h1><h3>Your 5 Questions:</h3>${SPEAKING_QS.map(q=>`<div class="q"><strong>Q${q.n}: ${q.q}</strong><br><em style="color:#7C3AED">"${q.fr}"</em><br><span class="hint">${q.hint}</span></div>`).join('')}<hr><p><strong>Instructions:</strong> Record a video answering all 5 questions. Upload to Google Drive. Paste the link when submitting your test.</p></body></html>`);
+  w.document.close();w.print();
+}
+
+// ============================================================
+// RESULTS
+// ============================================================
+function submitAll(){
+  const vid=document.getElementById('videoLink').value.trim();
+  // Build results
+  const rd=Math.min(25,readingScore);
+  const wr=Math.min(25,writingScore);
+  const ls=Math.min(25,listeningScore);
+  const spk=vid?'PENDING':'NOT SUBMITTED';
+  const totalKnown=rd+wr+ls;
+  const totalMax=vid?100:75;
+  const pct=Math.round((totalKnown/75)*100);
+
+  let level='';let levelColor='';let levelBg='';let levelMsg='';
+  if(pct>=80){level='A1 Ready';levelColor='#065F46';levelBg='#D1FAE5';levelMsg='Excellent! Your tested skills show A1-level French. You are ready to join Fast French Lab Module 1 and target A2 by month 2.';}
+  else if(pct>=60){level='Strong A0';levelColor='#0D9488';levelBg='#CCFBF1';levelMsg='Very good foundation! You have solid basics. With focused work on Days 1–5 of our programme, you will reach A1 level within 2 weeks.';}
+  else if(pct>=40){level='A0 in Progress';levelColor='#D97706';levelBg='#FEF3C7';levelMsg='You have some French knowledge but gaps in grammar and comprehension. Module 1 of Fast French Lab is designed exactly for you — structured, daily, and achievable.';}
+  else{level='True Beginner';levelColor='#DC2626';levelBg='#FEE2E2';levelMsg='No worries at all — knowing your true level is the most important step. Fast French Lab starts from zero. You are in exactly the right place.';}
+
+  const goals=userData.goals&&userData.goals.length>0?userData.goals:['French learning'];
+  const goalMsg=goals.includes('TCF Canada PR')||goals.includes('TEF Canada PR')?'Your goal is Canadian PR via TCF/TEF Canada. Students who start at A0 and follow our 6-month structured programme consistently reach CLB 7 exam-ready. You are on the right path.':goals.includes('DELF Exam')?'Your goal is DELF certification. Our curriculum is mapped to DELF rubrics from Day 1. You will be exam-ready within your timeline.':'Your French journey starts today. Whatever your goal, the discipline you build in the first 30 days determines everything that follows.';
+
+  const skillChips=(score,max)=>{const p=(score/max)*100;if(p>=80)return'<span class="score-chip sc-ex">Excellent</span>';if(p>=60)return'<span class="score-chip sc-gd">Good</span>';if(p>=40)return'<span class="score-chip sc-av">Developing</span>';return'<span class="score-chip sc-nd">Needs Work</span>';};
+  const bar=(score,max,color)=>`<div class="skill-bar"><div class="skill-fill" style="width:${(score/max)*100}%;background:${color}"></div></div>`;
+
+  document.getElementById('resultsContent').innerHTML=`
+    <div class="score-wrap">
+      <div class="score-header">
+        <div style="font-size:.72rem;font-weight:800;color:rgba(255,255,255,.6);letter-spacing:2px;margin-bottom:8px">FAST FRENCH LAB · A1 PLACEMENT RESULTS</div>
+        <div class="score-total">${totalKnown}<span>/${vid?100:75}</span></div>
+        <div class="score-label">${vid?'Total (Speaking pending)':'Reading + Writing + Listening'}</div>
+        <div class="score-level" style="background:${levelBg};color:${levelColor};border-color:${levelColor}">${level}</div>
+      </div>
+      <div class="score-body">
+        <div style="font-size:.78rem;font-weight:700;color:var(--gy);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px">Skill-by-Skill Breakdown</div>
+
+        <div class="skill-row">
+          <div class="skill-icon" style="background:#CCFBF1">📖</div>
+          <div class="skill-info">
+            <div class="skill-name">Compréhension Écrite (Reading) ${skillChips(rd,25)}</div>
+            ${bar(rd,25,'#0D9488')}
+          </div>
+          <div class="skill-score" style="color:#0D9488">${rd}/25</div>
+        </div>
+        <div class="skill-row">
+          <div class="skill-icon" style="background:#FEF3C7">✍️</div>
+          <div class="skill-info">
+            <div class="skill-name">Production Écrite (Writing) ${skillChips(wr,25)}</div>
+            ${bar(wr,25,'#D97706')}
+          </div>
+          <div class="skill-score" style="color:#D97706">${wr.toFixed(1)}/25</div>
+        </div>
+        <div class="skill-row">
+          <div class="skill-icon" style="background:#EDE9FE">🎧</div>
+          <div class="skill-info">
+            <div class="skill-name">Compréhension Orale (Listening) ${skillChips(ls,25)}</div>
+            ${bar(ls,25,'#7C3AED')}
+          </div>
+          <div class="skill-score" style="color:#7C3AED">${ls}/25</div>
+        </div>
+        <div class="skill-row">
+          <div class="skill-icon" style="background:#D1FAE5">🎤</div>
+          <div class="skill-info">
+            <div class="skill-name">Production Orale (Speaking)</div>
+            <div style="font-size:.74rem;color:var(--gy);margin-top:4px">${vid?'✅ Video submitted — Coach Linda will score within 48 hours.':'❌ No video submitted. Submit via WhatsApp to get your full score.'}</div>
+          </div>
+          <div class="skill-score" style="color:${vid?'#059669':'#DC2626'}">${vid?'⏳':'—'}/25</div>
+        </div>
+
+        <div style="height:1px;background:#E5E7EB;margin:16px 0"></div>
+
+        <div class="profile-box">
+          <h4>📊 Your Personalised Learning Profile</h4>
+          <div style="font-size:.82rem;color:var(--dk);line-height:1.7;margin-bottom:10px">${levelMsg}</div>
+          <div style="font-size:.8rem;color:var(--gy);line-height:1.6">${goalMsg}</div>
+          ${userData.learnTime?`<div style="margin-top:10px;font-size:.78rem"><span style="background:var(--tlbg);color:var(--tl);border-radius:50px;padding:3px 10px;font-weight:700">⏰ Best time: ${userData.learnTime}</span></div>`:''}
+        </div>
+
+        <div class="next-box">
+          <h4>🎯 Your Recommended Next Steps</h4>
+          ${pct>=60?`<div class="next-item">✅ <span><strong>Join Module 1 (A0→A1)</strong> — You are ready to start. Your strongest skills can accelerate your weaker ones.</span></div>`:`<div class="next-item">✅ <span><strong>Join Module 1 (A0→A1)</strong> — Start from Day 1. The structured curriculum will fill every gap in 30 days.</span></div>`}
+          <div class="next-item">📋 <span><strong>Take the Placement Test again</strong> after completing Days 1–5 to measure your progress.</span></div>
+          <div class="next-item">🎤 <span><strong>Submit your speaking video</strong> on WhatsApp to get your full 100/100 score from Coach Linda.</span></div>
+          <div class="next-item">🏆 <span><strong>Join the Fast French Lab community</strong> — monthly challenges, peer correction, voice note practice, and Coach Linda responding to YOUR French.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cta-box">
+      <h3>Ready to start your French journey?</h3>
+      <p>Hundreds of students coached. 70+ TCF/TEF Canada passes. CLB 7 guaranteed if you follow the sequence. Opening price: ₦50,000 per module. Spots filling now.</p>
+      <a href="#platform" class="btn-cta">🚀 Join Fast French Lab →</a>
+    </div>
+
+    <div style="background:#fff;border-radius:16px;padding:18px;margin-top:14px;box-shadow:var(--shadow);border:1.5px solid var(--border);text-align:center">
+      <div style="font-size:.8rem;font-weight:700;color:var(--dk);margin-bottom:8px">📱 Send your Speaking video to Coach Linda</div>
+      <div style="font-size:.76rem;color:var(--gy);margin-bottom:10px;line-height:1.5">Record your answers to the 5 speaking questions, upload to Google Drive, and send the link via WhatsApp to complete your full placement score.</div>
+      <div style="font-size:.88rem;font-weight:800;color:var(--tl)">WhatsApp: +234 905 668 6601</div>
+      <div style="font-size:.72rem;color:var(--gy);margin-top:4px">Message: "My speaking test — [Your Name]"</div>
+    </div>`;
+
+  goSec(5);
+}
+</script>
+</body>
+</html>
